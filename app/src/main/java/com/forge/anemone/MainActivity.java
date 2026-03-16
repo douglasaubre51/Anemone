@@ -3,8 +3,10 @@ package com.forge.anemone;
 import com.forge.anemone.models.*;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.SearchView;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,6 +23,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.forge.anemone.models.MangaResponse;
+import com.google.android.material.search.SearchBar;
+import com.google.android.material.search.SearchView;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -47,26 +51,24 @@ public class MainActivity extends AppCompatActivity {
         // Init Volley request queue!
         _requestQueue = Volley.newRequestQueue(this);
 
-        SearchView searchBox = findViewById(R.id.mangaSearchBox);
-        searchBox.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
-            @Override
-            public boolean onQueryTextSubmit(String query){
-                mangaSearchRequest(query);
-                System.out.println(query);
+        SearchBar searchBox = findViewById(R.id.mangaSearchBox);
+        SearchView searchView = findViewById(R.id.mangaSearchView);
 
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newQuery){
-                System.out.println(newQuery);
+        // show search view on search bar click!
+        searchBox.setOnClickListener(v -> searchView.show());
 
-                return false;
-            }
+        // handle search view submit!
+        searchView.getEditText().setOnEditorActionListener((v,actionId,event)->{
+            searchBox.setText(searchView.getText().toString());
+            mangaSearchRequest(searchBox.getText().toString());
+            searchView.hide();
+
+            return false;
         });
     }
 
     public void mangaSearchRequest(String mangaTitle){
-        SearchView searchBox = findViewById(R.id.mangaSearchBox);
+        SearchBar searchBox = findViewById(R.id.mangaSearchBox);
 
         StringRequest request = new StringRequest(
                 Request.Method.GET,
