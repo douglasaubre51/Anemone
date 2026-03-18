@@ -1,12 +1,10 @@
 package com.forge.anemone;
 
+import com.forge.anemone.adapters.MangaCollectionAdapter;
 import com.forge.anemone.models.*;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -14,12 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.forge.anemone.models.MangaResponse;
@@ -27,13 +26,14 @@ import com.google.android.material.search.SearchBar;
 import com.google.android.material.search.SearchView;
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     String url = "https://www.google.com";
     String mangadexUrl = "https://api.mangadex.org";
+
+    List<MangaCoverModel> SearchedMangaCollection;
 
     RequestQueue _requestQueue;
 
@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        SearchedMangaCollection = new ArrayList<>();
 
         // Init Volley request queue!
         _requestQueue = Volley.newRequestQueue(this);
@@ -78,18 +80,25 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String json){
                         try {
                             System.out.println("Anemone got the message:");
-
                             Gson gson = new Gson();
                             MangaResponse mangaResponse = gson.fromJson(json, MangaResponse.class);
+                            System.out.println(mangaResponse.data.get(0).attributes.title.get("ja-ro"));
+                            System.out.println(mangaResponse.data.get(0).attributes.description.get("en"));
 
-                            TextView mangaTitle = findViewById(R.id.mangaTitle);
-                            TextView mangaDesc = findViewById(R.id.mangaDesc);
+                            // Clear before loading new data!
+                            SearchedMangaCollection.clear();
 
-                                System.out.println(mangaResponse.data.get(0).attributes.title.get("ja-ro"));
-                                mangaTitle.setText(mangaResponse.data.get(0).attributes.title.get("ja-ro"));
+                            for(MangaData cover : mangaResponse.data){
+                                MangaCoverModel coverModel = new MangaCoverModel();
+                                coverModel.title = cover.attributes.title.get("en");
+                                coverModel.desc = cover.attributes.description.get("en");
+                                SearchedMangaCollection.add(coverModel);
+                            }
 
-                                System.out.println(mangaResponse.data.get(0).attributes.description.get("en"));
-                                mangaDesc.setText(mangaResponse.data.get(0).attributes.description.get("en"));
+                            RecyclerView recycler = findViewById(R.id.mangaCollectionRecycler);
+                            recycler.setLayoutManager(new LinearLayoutManager(getCurrentFocus().getContext()));
+                            recycler.setAdapter(new MangaCollectionAdapter(SearchedMangaCollection));
+
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
