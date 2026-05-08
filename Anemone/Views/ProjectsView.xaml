@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Anemone.Views.ProjectsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Anemone.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Anemone.Models"
+    mc:Ignorable="d">
+    <Grid Margin="16">
+        <!--  Spinner  -->
+        <ProgressRing
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay}" />
+
+        <!--  Collection  -->
+        <GridView
+            Grid.Row="1"
+            Padding="16"
+            CornerRadius="8"
+            IsItemClickEnabled="True"
+            ItemClick="{x:Bind ViewModel.OnProjectClicked}"
+            ItemsSource="{x:Bind ViewModel.Projects, Mode=OneWay}"
+            SelectionMode="Single">
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="models:Project">
+                    <!--  Card  -->
+                    <Border
+                        MinWidth="300"
+                        MinHeight="120"
+                        Margin="8"
+                        Background="White"
+                        CornerRadius="4"
+                        Translation="0,0,8">
+                        <Border.Shadow>
+                            <ThemeShadow x:Name="shadow" />
+                        </Border.Shadow>
+                        <Grid Margin="16">
+                            <StackPanel
+                                Grid.Row="0"
+                                Orientation="Horizontal"
+                                Spacing="4">
+                                <!--  Card Title  -->
+                                <TextBlock
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Foreground="Black"
+                                    Text="{x:Bind Title}" />
+
+                                <!--  Chip  -->
+                                <Border
+                                    Padding="6,2"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Background="#b9f8cf"
+                                    CornerRadius="4"
+                                    Visibility="{x:Bind IsTaskAvailable}">
+                                    <TextBlock
+                                        FontSize="10"
+                                        Foreground="Green"
+                                        Text="{x:Bind UnfinishedTasksNo}" />
+                                </Border>
+                            </StackPanel>
+
+                            <!--  Short Desc  -->
+                            <TextBlock
+                                Grid.Row="1"
+                                FontSize="14"
+                                TextTrimming="CharacterEllipsis"
+                                MaxLines="1"
+                                Foreground="Black"
+                                Text="{x:Bind ShortDesc}"
+                                TextWrapping="Wrap" />
+
+                            <!--  Platform spec  -->
+                            <TextBlock
+                                Grid.Row="3"
+                                HorizontalAlignment="Right"
+                                TextTrimming="CharacterEllipsis"
+                                FontSize="14"
+                                FontWeight="Medium"
+                                MaxLines="1"
+                                Text="{x:Bind ProjectSpec}" />
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid MaximumRowsOrColumns="4" Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+
+            <GridView.Header>
+                <TextBlock
+                    Grid.Row="0"
+                    Margin="0,0,0,32"
+                    HorizontalAlignment="Center"
+                    FontSize="48"
+                    FontWeight="SemiBold"
+                    Text="Anemone" />
+            </GridView.Header>
+        </GridView>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+    </Grid>
+</Page>

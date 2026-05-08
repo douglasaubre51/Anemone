@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Anemone (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Anemone (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

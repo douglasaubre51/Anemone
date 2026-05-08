@@ -1,0 +1,15 @@
+﻿global using Anemone.Models;
+global using Anemone.Services;
+global using Anemone.Store;
+global using Anemone.ViewModels;
+global using Anemone.Views;
+global using CommunityToolkit.Mvvm.ComponentModel;
+global using Microsoft.UI.Xaml;
+global using Microsoft.UI.Xaml.Controls;
+global using MvvmHelpers;
+global using System;
+global using System.Collections.Generic;
+global using System.Diagnostics;
+global using System.Net.Http;
+global using System.Net.Http.Json;
+global using System.Threading.Tasks;
